@@ -1,0 +1,98 @@
+[
+  {
+    "issue": "E_INTERNAL_FAILURE",
+    "root_cause": "Unhandled exception in core service or memory corruption",
+    "solution": "1. Check recent deployments for code changes\n2. Review service logs for stack traces\n3. Restart affected service with debug logging enabled\n4. Run memory profiling tools",
+    "affected_components": ["DataSync", "AuthService", "DBHandler", "APIClient"],
+    "tags": ["critical", "internal", "crash"],
+    "confidence": 0.95
+  },
+  {
+    "issue": "E_NETWORK_DOWN",
+    "root_cause": "Network interface failure, firewall blockage, or ISP outage",
+    "solution": "1. Ping internal and external endpoints\n2. Check firewall rules (inbound/outbound)\n3. Verify DNS resolution is working\n4. Test with alternative network path\n5. Contact network operations team",
+    "affected_components": ["Monitor", "APIClient", "LogIngestor"],
+    "tags": ["network", "connectivity", "outage"],
+    "confidence": 0.90
+  },
+  {
+    "issue": "E_TIMEOUT",
+    "root_cause": "Service response delay, slow database queries, or external API latency",
+    "solution": "1. Check database query performance indexes\n2. Review external API response times\n3. Increase timeout thresholds temporarily\n4. Implement circuit breaker pattern\n5. Add request queuing with fallback mechanism",
+    "affected_components": ["DBHandler", "APIClient", "DataSync"],
+    "tags": ["performance", "timeout", "latency"],
+    "confidence": 0.85
+  },
+  {
+    "issue": "E_DB_FAIL",
+    "root_cause": "Database connection pool exhausted, query syntax error, or deadlock",
+    "solution": "1. Check database connection pool usage metrics\n2. Review recent database schema changes\n3. Kill long-running queries blocking others\n4. Increase connection pool size\n5. Verify database credentials and permissions",
+    "affected_components": ["DBHandler", "DataSync", "AuthService"],
+    "tags": ["database", "connection", "query"],
+    "confidence": 0.88
+  },
+  {
+    "issue": "E_API_UNAVAILABLE",
+    "root_cause": "External API service down, rate limiting, or authentication failure",
+    "solution": "1. Verify external API status page\n2. Check API rate limit usage and quotas\n3. Renew API authentication tokens/keys\n4. Implement retry logic with exponential backoff\n5. Switch to backup API endpoint if available",
+    "affected_components": ["APIClient", "Monitor", "DataSync"],
+    "tags": ["api", "external", "integration"],
+    "confidence": 0.87
+  },
+  {
+    "issue": "E_CONFIG_MISMATCH",
+    "root_cause": "Version mismatch between services, incorrect environment settings",
+    "solution": "1. Compare configuration files across environments\n2. Verify environment variables are set correctly\n3. Check configuration management system\n4. Validate service discovery settings\n5. Rollback recent configuration changes",
+    "affected_components": ["All"],
+    "tags": ["configuration", "version", "settings"],
+    "confidence": 0.92
+  },
+  {
+    "issue": "E_AUTH_FAILED",
+    "root_cause": "Expired credentials, invalid tokens, or authorization server issues",
+    "solution": "1. Check credential expiration dates\n2. Verify token validation endpoint availability\n3. Renew service certificates if expired\n4. Check authorization server status and logs\n5. Implement automatic token refresh mechanism",
+    "affected_components": ["AuthService", "APIClient"],
+    "tags": ["authentication", "security", "token"],
+    "confidence": 0.89
+  },
+  {
+    "issue": "Unigy trading endpoint failure",
+    "root_cause": "Trading gateway connectivity issue or market data feed disruption",
+    "solution": "1. Check trading gateway connectivity and logs\n2. Verify market data subscription status\n3. Review order routing configuration\n4. Test with simulated trades in sandbox\n5. Contact exchange connectivity support team",
+    "affected_components": ["DataSync", "APIClient", "Monitor"],
+    "tags": ["trading", "unigy", "endpoint", "financial"],
+    "confidence": 0.91
+  },
+  {
+    "issue": "Pulse analytics computation timeout",
+    "root_cause": "Large dataset processing, inefficient algorithms, or insufficient resources",
+    "solution": "1. Optimize analytical queries with proper indexes\n2. Implement data partitioning for large datasets\n3. Increase compute resources (CPU/RAM)\n4. Add query timeout and cancellation logic\n5. Cache frequent computation results",
+    "affected_components": ["DBHandler", "DataSync", "CacheManager"],
+    "tags": ["analytics", "pulse", "computation", "performance"],
+    "confidence": 0.86
+  },
+  {
+    "issue": "Touch UI communication error",
+    "root_cause": "WebSocket connection failure, UI component issues, or version mismatch",
+    "solution": "1. Check WebSocket connectivity and handshake\n2. Verify UI component versions and compatibility\n3. Clear browser/client application cache\n4. Review CORS settings and headers\n5. Test with different client devices/browsers",
+    "affected_components": ["APIClient", "Monitor", "CacheManager"],
+    "tags": ["ui", "touch", "communication", "websocket"],
+    "confidence": 0.88
+  },
+  {
+    "issue": "Voice channel initialization error",
+    "root_cause": "Audio service dependencies missing or configuration incorrect",
+    "solution": "1. Verify audio service dependencies are installed\n2. Check audio device configuration and permissions\n3. Test with different audio input/output devices\n4. Review voice channel initialization sequence\n5. Check for conflicting audio services",
+    "affected_components": ["APIClient", "Monitor"],
+    "tags": ["audio", "voice", "unigy", "communication"],
+    "confidence": 0.84
+  },
+  {
+    "issue": "Market data feed disruption",
+    "root_cause": "Data provider connectivity issues or feed configuration problems",
+    "solution": "1. Check data provider connectivity and status\n2. Verify feed subscription and entitlements\n3. Review market data configuration settings\n4. Test with alternative data sources\n5. Contact market data vendor support",
+    "affected_components": ["DataSync", "APIClient"],
+    "tags": ["market-data", "feed", "financial", "unigy"],
+    "confidence": 0.87
+  }
+]
