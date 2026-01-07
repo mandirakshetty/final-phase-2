@@ -153,35 +153,35 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Header
-st.markdown('<h1 class="main-header">🔍 LogSentry AI - Enterprise RCA Analyzer</h1>', unsafe_allow_html=True)
-st.markdown("**Phase 2: RAG-powered Troubleshooting Assistant**")
+st.markdown('<h1 class="main-header"> Phase 2: RAG-powered Troubleshooting Assistant</h1>', unsafe_allow_html=True)
+
 
 # Sidebar
 with st.sidebar:
-    st.header("🔧 Analysis Parameters")
+    st.header(" Analysis Parameters")
     
     # Get available log structure
     log_structure = log_reader.get_available_logs()
     
     # Zone selection
     zones = list(log_structure.keys()) if log_structure else ["EMEA", "ASIA", "AMERICA"]
-    zone = st.selectbox("🌍 Zone", zones, index=0 if zones else 0)
+    zone = st.selectbox("Zone", zones, index=0 if zones else 0)
     
     # Client selection
     clients = list(log_structure.get(zone, {}).keys()) if zone in log_structure else ["Barclays", "HSBC", "JPMorgan"]
-    client = st.selectbox("🏢 Client", clients, index=0 if clients else 0)
+    client = st.selectbox(" Client", clients, index=0 if clients else 0)
     
     # Application selection
     apps = list(log_structure.get(zone, {}).get(client, {}).keys()) if zone in log_structure and client in log_structure[zone] else ["Unigy", "Pulse", "Touch"]
-    app = st.selectbox("📱 Application", apps, index=0 if apps else 0)
+    app = st.selectbox(" Application", apps, index=0 if apps else 0)
     
     # Version selection
     versions = log_structure.get(zone, {}).get(client, {}).get(app, []) if zone in log_structure and client in log_structure[zone] and app in log_structure[zone][client] else ["4.0", "3.0"]
-    version = st.selectbox("🔢 Version", versions, index=0 if versions else 0)
+    version = st.selectbox(" Version", versions, index=0 if versions else 0)
     
     # Sub-version selection
     sub_versions = ["4.0.1", "3.0.1", "4.0.0", "3.0.0"]  # This could be dynamic
-    sub_version = st.selectbox("📝 Sub-Version", sub_versions)
+    sub_version = st.selectbox(" Sub-Version", sub_versions)
     
     # Time range
     col1, col2 = st.columns(2)
@@ -193,24 +193,24 @@ with st.sidebar:
     # Query input
     st.markdown("---")
     query = st.text_area(
-        "🔍 Enter your query or error description:",
+        " Enter your query or error description:",
         "Why did the system fail with timeout errors?",
         height=100
     )
     
     # Advanced options
-    with st.expander("⚙️ Advanced Options"):
+    with st.expander(" Advanced Options"):
         top_k = st.slider("Top K results", 1, 10, 5)
         min_similarity = st.slider("Minimum similarity", 0.0, 1.0, 0.6)
         include_kb = st.checkbox("Include KB fixes", True)
         index_logs = st.checkbox("Index logs for future", True)
     
     # Action button
-    analyze_btn = st.button("🚀 Analyze Logs", type="primary", use_container_width=True)
+    analyze_btn = st.button(" Analyze Logs", type="primary", use_container_width=True)
     
     # Quick queries
     st.markdown("---")
-    st.markdown("**💡 Quick Queries:**")
+    st.markdown("** Quick Queries:**")
     quick_queries = [
         "Find all timeout errors",
         "Show database connection issues",
@@ -225,14 +225,14 @@ with st.sidebar:
 # Main content
 if analyze_btn or 'results' in st.session_state:
     if analyze_btn:
-        with st.spinner("📥 Reading logs..."):
+        with st.spinner(" Reading logs..."):
             log_data, error = log_reader.read_logs(zone, client, app, version, sub_version)
             
             if error:
                 st.error(f"Error: {error}")
                 st.stop()
             
-            with st.spinner("🧠 Analyzing logs..."):
+            with st.spinner(" Analyzing logs..."):
                 # First, get basic analysis results
                 results = analyze_logs(
                     log_data=log_data,
@@ -263,7 +263,7 @@ if analyze_btn or 'results' in st.session_state:
                 st.session_state.results = results
                 st.session_state.log_data = log_data
                 
-                st.success(f"✅ Analysis complete! Found {len(log_data['structured'])} log entries")
+                st.success(f" Analysis complete! Found {len(log_data['structured'])} log entries")
     else:
         results = st.session_state.results
         log_data = st.session_state.log_data
@@ -281,14 +281,14 @@ if analyze_btn or 'results' in st.session_state:
     # RCA Summary
         
         # RCA Summary
-        st.markdown("## 📋 **Troubleshooting Results**")
+        st.markdown("##  **Troubleshooting Results**")
         
         # Query section
-        st.markdown("### 🔍 What You Asked")
+        st.markdown("###  What You Asked")
         st.info(f"**Query:** \"{query}\"")
         
         # What We Found section
-        st.markdown("### 📊 What We Found")
+        st.markdown("###  What We Found")
         col1, col2, col3 = st.columns(3)
         with col1:
             st.metric("Total Error Lines", results['log_stats']['total_errors'])
@@ -298,16 +298,16 @@ if analyze_btn or 'results' in st.session_state:
             st.metric("Unique Error Types", len(set(results.get('error_lines', []))))
         
         # Errors Found section - SCROLLABLE GREEN TEXT
-        st.markdown("### 🚨 Errors Found")
+        st.markdown("###  Errors Found")
         
         # Get error lines (prioritize exact matches, then similar errors)
         error_lines = []
         if 'exact_matches' in results and results['exact_matches']:
             error_lines = results['exact_matches']
-            st.success(f"✅ Found {len(error_lines)} exact matches")
+            st.success(f" Found {len(error_lines)} exact matches")
         elif 'similar_errors' in results and results['similar_errors']:
             error_lines = results['similar_errors']
-            st.warning(f"⚠️ Found {len(error_lines)} similar errors")
+            st.warning(f" Found {len(error_lines)} similar errors")
         
         if error_lines:
             # Create a scrollable container for error lines
@@ -332,7 +332,7 @@ if analyze_btn or 'results' in st.session_state:
             )
             
             # Show full error details in expandable sections
-            st.markdown("**📄 Full Error Details:**")
+            st.markdown("** Full Error Details:**")
             for i, line in enumerate(error_lines[:5], 1):  # Show first 5 full errors
                 with st.expander(f"Error #{i}", expanded=False):
                     st.code(line, language='text')
@@ -340,14 +340,14 @@ if analyze_btn or 'results' in st.session_state:
             st.info("No matching errors found")
         
         # Recommended Fix section
-        st.markdown("### 🛠️ Recommended Fix")
+        st.markdown("###  Recommended Fix")
         
         if 'solutions' in results and results['solutions']:
             for i, sol in enumerate(results['solutions'][:2], 1):  # Show first 2 solutions
                 with st.container():
                     st.markdown(f"**{sol.get('error', 'Issue')}**")
                     if sol.get('exact_match', False):
-                        st.success("🎯 **Exact match from Knowledge Base**")
+                        st.success(" **Exact match from Knowledge Base**")
                     
                     solution_text = sol.get('solution', '')
                     if solution_text:
@@ -362,7 +362,7 @@ if analyze_btn or 'results' in st.session_state:
 
     with tab2:
     # Analytics Dashboard
-        st.subheader("📊 **Log Analysis Dashboard**")
+        st.subheader(" **Log Analysis Dashboard**")
         
         if 'results' in st.session_state:
             results = st.session_state.results
@@ -373,25 +373,25 @@ if analyze_btn or 'results' in st.session_state:
             with col1:
                 # Log files
                 if 'log_data' in st.session_state:
-                    st.metric("📁 Files", st.session_state.log_data.get('file_count', 0))
+                    st.metric(" Files", st.session_state.log_data.get('file_count', 0))
                 else:
-                    st.metric("📁 Files", 0)
+                    st.metric(" Files", 0)
             
             with col2:
                 # Total errors - handle both formats
                 if 'log_stats' in results and 'total_errors' in results['log_stats']:
                     # Old format
-                    st.metric("🚨 Total Errors", results['log_stats']['total_errors'])
+                    st.metric(" Total Errors", results['log_stats']['total_errors'])
                 elif 'error_lines' in results:
                     # New simplified format
-                    st.metric("🚨 Total Errors", len(results.get('error_lines', [])))
+                    st.metric(" Total Errors", len(results.get('error_lines', [])))
                 else:
-                    st.metric("🚨 Total Errors", 0)
+                    st.metric(" Total Errors", 0)
             
             with col3:
                 # Components affected
                 if 'log_stats' in results and 'unique_components' in results['log_stats']:
-                    st.metric("⚙️ Components", results['log_stats']['unique_components'])
+                    st.metric(" Components", results['log_stats']['unique_components'])
                 else:
                     # Count from error lines if available
                     if 'exact_matches' in results and results['exact_matches']:
@@ -401,21 +401,21 @@ if analyze_btn or 'results' in st.session_state:
                             match = re.search(r'Component=([A-Za-z]+)', line)
                             if match:
                                 components.add(match.group(1))
-                        st.metric("⚙️ Components", len(components))
+                        st.metric(" Components", len(components))
                     else:
-                        st.metric("⚙️ Components", 0)
+                        st.metric(" Components", 0)
             
             with col4:
                 # Confidence
                 if 'exact_matches' in results and results['exact_matches']:
-                    st.metric("🎯 Confidence", "High")
+                    st.metric(" Confidence", "High")
                 elif 'similar_errors' in results and results['similar_errors']:
-                    st.metric("🎯 Confidence", "Medium")
+                    st.metric(" Confidence", "Medium")
                 else:
-                    st.metric("🎯 Confidence", "Low")
+                    st.metric(" Confidence", "Low")
             
             # Visualization section
-            st.subheader("📈 **Error Distribution**")
+            st.subheader(" **Error Distribution**")
             
             if 'log_data' in st.session_state and 'structured' in st.session_state.log_data:
                 df = pd.DataFrame([entry.to_dict() for entry in st.session_state.log_data['structured']])
@@ -467,7 +467,7 @@ if analyze_btn or 'results' in st.session_state:
                             st.info("Component data not available")
                     
                     # ADD TIME SERIES SECTION BACK
-                    st.subheader("⏰ Error Timeline")
+                    st.subheader(" Error Timeline")
                     if 'timestamp' in df.columns and df['timestamp'].notna().any():
                         try:
                             # Convert timestamps
@@ -496,7 +496,7 @@ if analyze_btn or 'results' in st.session_state:
                             st.warning(f"Could not create timeline: {str(e)}")
                     
                     # Error Severity Breakdown
-                    st.subheader("⚠️ Error Severity")
+                    st.subheader(" Error Severity")
                     if 'log_level' in df.columns:
                         severity_counts = df['log_level'].value_counts()
                         if not severity_counts.empty:
@@ -515,15 +515,15 @@ if analyze_btn or 'results' in st.session_state:
                                     with col3:
                                         st.metric(f"{emoji} Info Messages", count)
                 else:
-                    st.info("📝 No structured log data available for visualization")
+                    st.info(" No structured log data available for visualization")
             else:
-                st.info("📂 Load logs first using the Analyze button")
+                st.info(" Load logs first using the Analyze button")
         else:
-            st.info("🔍 Run an analysis first to see dashboard data")
+            st.info(" Run an analysis first to see dashboard data")
         
     with tab3:
     # Evidence
-        st.subheader("🔍 **What We Found in Logs**")
+        st.subheader(" **What We Found in Logs**")
         
         if 'results' in st.session_state:
             results = st.session_state.results
@@ -533,28 +533,28 @@ if analyze_btn or 'results' in st.session_state:
                 similar_errors = results.get('similar_errors', [])
                 
                 if exact_matches:
-                    st.success(f"✅ Found {len(exact_matches)} EXACT matches for your query")
-                    st.subheader("📄 **Exact Matches**")
+                    st.success(f" Found {len(exact_matches)} EXACT matches for your query")
+                    st.subheader(" **Exact Matches**")
                     for i, line in enumerate(exact_matches[:3], 1):
                         with st.expander(f"Match #{i}", expanded=(i==1)):
                             st.code(line)
                 elif similar_errors:
-                    st.warning(f"⚠️ No exact matches. Found {len(similar_errors)} similar errors")
-                    st.subheader("📄 **Similar Errors Found**")
+                    st.warning(f" No exact matches. Found {len(similar_errors)} similar errors")
+                    st.subheader(" **Similar Errors Found**")
                     for i, line in enumerate(similar_errors[:3], 1):
                         with st.expander(f"Similar error #{i}", expanded=(i==1)):
                             st.code(line)
                 else:
-                    st.info("🔍 No matching errors found")
+                    st.info(" No matching errors found")
             
             # Solutions
             if 'solutions' in results and results['solutions']:
-                st.subheader("🛠️ **Recommended Solution**")
+                st.subheader(" **Recommended Solution**")
                 for sol in results['solutions'][:2]:  # Show max 2 solutions
                     with st.container():
                         st.markdown(f"### **{sol.get('error', 'Issue')}**")
                         if sol.get('exact_match', False):
-                            st.success("🎯 **Exact match from Knowledge Base**")
+                            st.success(" **Exact match from Knowledge Base**")
                         
                         solution_text = sol.get('solution', '')
                         if solution_text:
@@ -567,14 +567,14 @@ if analyze_btn or 'results' in st.session_state:
 
     with tab4:
         # KB Fixed Log Details
-        st.subheader("📚 **Knowledge Base Solutions**")
+        st.subheader(" **Knowledge Base Solutions**")
         
         if 'results' in st.session_state:
             results = st.session_state.results
             
             # Check if we have solutions in results
             if 'kb_solutions' in results and results['kb_solutions']:
-                st.success(f"✅ Found {len(results['kb_solutions'])} solutions in Knowledge Base")
+                st.success(f" Found {len(results['kb_solutions'])} solutions in Knowledge Base")
                 
                 # Display each solution
                 for i, solution in enumerate(results['kb_solutions'], 1):
@@ -610,7 +610,7 @@ if analyze_btn or 'results' in st.session_state:
             
             elif 'exact_matches' in results and results['exact_matches']:
                 # If we have exact matches but no KB solutions, search for them
-                st.info("🔍 Searching for solutions in Knowledge Base...")
+                st.info(" Searching for solutions in Knowledge Base...")
                 
                 # Placeholder for KB search logic
                 # In a real implementation, you would:
@@ -628,13 +628,13 @@ if analyze_btn or 'results' in st.session_state:
                     st.write("3. Add validation query to connection pool")
                     st.write("4. Monitor connection usage metrics")
             else:
-                st.info("🔍 No errors found to search for solutions. Run an analysis first.")
+                st.info(" No errors found to search for solutions. Run an analysis first.")
         else:
-            st.info("🔍 Run an analysis first to see solutions")
+            st.info(" Run an analysis first to see solutions")
 
     with tab5:
         # Raw Log Details
-        st.subheader("📁 Raw Log Contents")
+        st.subheader(" Raw Log Contents")
         
         # Log level filter
         log_levels = ["ALL", "ERROR", "WARN", "INFO", "DEBUG"]
@@ -669,7 +669,7 @@ else:
     with col1:
         st.markdown("""
         <div class="metric-card">
-            <h3>🚀 Fast Analysis</h3>
+            <h3> Fast Analysis</h3>
             <p>Get RCA in seconds using semantic search</p>
         </div>
         """, unsafe_allow_html=True)
@@ -677,7 +677,7 @@ else:
     with col2:
         st.markdown("""
         <div class="metric-card">
-            <h3>🧠 AI-Powered</h3>
+            <h3> AI-Powered</h3>
             <p>RAG architecture with local embeddings</p>
         </div>
         """, unsafe_allow_html=True)
@@ -685,14 +685,14 @@ else:
     with col3:
         st.markdown("""
         <div class="metric-card">
-            <h3>📊 Enterprise Ready</h3>
+            <h3> Enterprise Ready</h3>
             <p>Multi-zone, multi-client support</p>
         </div>
         """, unsafe_allow_html=True)
     
     # Quick start guide
     st.markdown("---")
-    st.markdown("### 🚀 Quick Start Guide")
+    st.markdown("###  Quick Start Guide")
     
     guide_col1, guide_col2 = st.columns(2)
     
@@ -713,7 +713,7 @@ else:
     
     with guide_col2:
         st.markdown("""
-        **📁 Expected Log Structure:**
+        ** Expected Log Structure:**
         ```
         E:/LogSpace/
         ├── ZONE/
@@ -721,7 +721,6 @@ else:
         │   │   ├── APP/
         │   │   │   ├── VERSION/
         │   │   │   │   ├── SUB_VERSION/
-        │   │   │   │   │   ├── *.log
         │   │   │   │   │   ├── *.error
         │   │   │   │   │   └── *.info
         ```
@@ -736,7 +735,7 @@ else:
     
     # System stats
     st.markdown("---")
-    st.markdown("### 📊 System Statistics")
+    st.markdown("###  System Statistics")
     
     stat_col1, stat_col2, stat_col3 = st.columns(3)
     with stat_col1:
